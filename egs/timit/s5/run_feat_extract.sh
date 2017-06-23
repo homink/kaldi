@@ -7,7 +7,7 @@
 onmt=./onmt
 mkdir -p $onmt/data
 
-export train_cmd="run.pl"
+. ./cmd.sh
 [ -f path.sh ] && . ./path.sh
 set -e
 
@@ -17,18 +17,7 @@ echo ===========================================================================
 echo "                Data & Lexicon & Language Preparation                     "
 echo ============================================================================
 
-timit=/media/kwon/DISK2/DEV/DATA/LDC93S1W/timit
-
 local/timit_data_prep_txt.sh $timit || exit 1
-
-local/timit_prepare_dict.sh
-
-# Caution below: we remove optional silence by setting "--sil-prob 0.0",
-# in TIMIT the silence appears also as a word in the dictionary and is scored.
-utils/prepare_lang.sh --sil-prob 0.0 --position-dependent-phones false --num-sil-states 3 \
-  data/local/dict "sil" data/local/lang_tmp data/lang
-
-local/timit_format_data.sh
 
 echo ============================================================================
 echo "         MFCC Feature Extration & CMVN for Training and Test set          "
