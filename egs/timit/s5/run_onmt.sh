@@ -1,5 +1,7 @@
 #!/bin/bash
 
+. ./cmd.sh
+[ -f path.sh ] && . ./path.sh
 ./run_feat_extract.sh
 
 for xx in test dev train
