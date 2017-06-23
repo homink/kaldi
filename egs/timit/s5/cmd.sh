@@ -14,6 +14,7 @@ export train_cmd="queue.pl --mem 4G"
 export decode_cmd="queue.pl --mem 4G"
 # the use of cuda_cmd is deprecated, used only in 'nnet1',
 export cuda_cmd="queue.pl --gpu 1"
+export timit="/media/kwon/DISK2/DEV/DATA/LDC93S1W/timit"
 
 if [ "$(hostname -d)" == "fit.vutbr.cz" ]; then
   queue_conf=$HOME/queue_conf/default.conf # see example /homes/kazi/iveselyk/queue_conf/default.conf,
