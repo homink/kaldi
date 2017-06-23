@@ -64,7 +64,7 @@ mdab0_sx229_dr1  [
 
 5. Produces transcription files - 1)onmt/data/train.tgt.trans 2)onmt/data/dev.tgt.trans 3)onmt/data/test.tgt
 
-'''
+```
 >> head -n 3 *.trans
 ==> dev.tgt.trans <==
 mbwm0_si1934_dr3 w a i t _ a _ l i t t l e _ w h i l e
@@ -80,5 +80,4 @@ mtas1_si1473_dr2 y o u _ d o n ' t _ e a t _ e n o u g h _ h o n e y
 mejs0_sx70_dr8 d i d _ y o u _ e a t _ y e t
 mjmd0_si1658_dr2 w h e r e _ w e r e _ t h e y _ n o w
 mmea0_si2018_dr8 t h e y _ w e r e _ s h a t t e r e d
-
-'''
+```
