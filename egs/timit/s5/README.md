@@ -1,6 +1,6 @@
-# Acoustic Feature and Phone Annotation Extraction from the Kaldi
+# Acoustic Feature, Phone Annotation, and Transcription Extraction from the Kaldi
 
-[Kaldi](http://kaldi-asr.org) has made use of special data preparation where audio and linguistic data are utilized for the ASR training. In order to use these data for other systems, we extract 3 types of normalized acoustic features (MFCC 39th, log Mel filter bank 40th, and log Mel filter bank 120th) and phone transcriptions. It is written for TIMIT corpus but not limited to others if available.
+[Kaldi](http://kaldi-asr.org) has made use of special data preparation where audio and linguistic data are utilized for the ASR training. In order to use these data for other systems, we extract 3 types of normalized acoustic features (MFCC 39th, log Mel filter bank 40th, and log Mel filter bank 120th), phone annotation and transcriptions. It is written for TIMIT corpus but not limited to others if available.
 
 ## Kaldi installation
 
