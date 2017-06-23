@@ -43,7 +43,7 @@ This script performs
 |                   | dev.tgt.clean        | dev.tgt.noisy   |
 |                   | test.tgt.clean       | test.tgt.noisy  |
 
-The above files are found in onmt/data and show the following contents.
+   * The above files are found in onmt/data and show the following contents.
 
 ```
 >> head -n 3 train.mfcc39.clean
@@ -62,7 +62,7 @@ mdab0_sx229_dr1  [
   -2.093783 -1.687467 -1.746725 -1.81735 -1.179113 -1.044898 -0.8205516 -0.801538 -1.124402 -1.045885 -0.8584454 -1.28592 -1.633036 -1.648373 -1.511827 -1.496327 -1.369844 -1.801623 -1.518444 -1.290257 -1.218433 -1.628947 -1.560657 0.06106752 0.05472705 0.01175174 -0.02315769 -0.02954349 -0.07329132 -0.01532599 0.01347058 -0.07041176 -0.07325625 -0.07066907 -0.02817813 -0.01646179 -0.02664277 -0.04463074 -0.158204 -0.08970711 -0.06007421 -0.09946944 -0.081636 -0.06490079 -0.04153612 0.0213649 -0.002818488 -0.03208992 0.003917262 0.03172628 -0.02912144 -0.02771329 -0.01609197 0.01204723 0.0291381 0.0105749 -0.005456522 -0.02301206 -0.01481548 -0.009837396 -0.009784542 -0.02531262 -0.0358828 0.0140798 0.006179143 -0.0001318716 -0.005039368 0.002326123 0.002421349
 ```
 
-5. Produces transcription files - 1)onmt/data/train.tgt.trans 2)onmt/data/dev.tgt.trans 3)onmt/data/test.tgt
+5. Produces transcription files - 1) onmt/data/train.tgt.trans 2) onmt/data/dev.tgt.trans 3) onmt/data/test.tgt.trans
 
 ```
 >> head -n 3 *.trans
