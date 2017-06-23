@@ -1,8 +1,6 @@
 #!/bin/bash
 # This script is to build target by searching utterance key of feature from corpus
 
-timit=/media/kwon/DISK2/DEV/DATA/LDC93S1W/timit
-
 infile=$(sed -e 's:.[a-z0-9]*$::i' <<< $1)
 
 [ -e $infile.tgt ] && rm -f $infile.tgt
