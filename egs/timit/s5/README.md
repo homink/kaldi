@@ -10,7 +10,7 @@ Details of the Kaldi installation are described [HERE](http://kaldi-asr.org/doc/
 
 Details of TIMIT corpus is [HERE](https://catalog.ldc.upenn.edu/ldc93s1). I hope you have permission to use it.
 
-In this repository, you need to define where TIMIT corpus is located in 2 scripts files: [run_feat_extract.sh](https://github.com/homink/kaldi/blob/FeatureText/egs/timit/s5/run_feat_extract.sh) and [onmt/build_tgt.sh](https://github.com/homink/kaldi/blob/FeatureText/egs/timit/s5/onmt/build_tgt.sh).
+In this repository, you need to define where TIMIT corpus is located in: [cmd.sh](https://github.com/homink/kaldi/blob/FeatureText/egs/timit/s5/cmd.sh)
 
 ## Execution
 
