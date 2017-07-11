@@ -11,7 +11,7 @@ Details of WSJ corpus are [LDC93S6B](https://catalog.ldc.upenn.edu/LDC93S6B) and
 
 In this repository, you need to define where WSJ corpus is located in: [run.wsj](https://github.com/homink/kaldi/blob/FeatureText/egs/onmt/s5/run_wsj.sh)
 
-As default, train_si284 and test_eval92 will be produced WSJ corpus. dev set is part of test_eval92. If you set build_all=1 in [run.wsj](https://github.com/homink/kaldi/blob/FeatureText/egs/onmt/s5/run_wsj.sh), only 1 set will be produced all together. The dimension of acoustic feacture vector is 40 as default as well. If you need only 40 dimension, set add_deltas=false in [extract_feat2lmfb.sh](https://github.com/homink/kaldi/blob/FeatureText/egs/onmt/s5/local/extract_feat2lmfb.sh)
+As default, train_si284 and test_eval92 will be produced WSJ corpus. dev set is part of test_eval92. If you set build_all=1 in [run.wsj](https://github.com/homink/kaldi/blob/FeatureText/egs/onmt/s5/run_wsj.sh), only 1 set will be produced all together. The dimension of acoustic feacture vector is 40 as default as well. If you need only 40 dimension, set add_deltas=false in [extract_feat2lmfb.sh](https://github.com/homink/kaldi/blob/FeatureText/egs/onmt/s5/local/extract_feat2lmfb.sh) for time saving.
 
 ## Execution
 
