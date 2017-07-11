@@ -15,6 +15,7 @@ In this repository, you need to define where WSJ corpus is located in: [run.wsj]
 You can simply run the following script. 
 
 ```bash
+cd onmt
 ./run_wsj.sh
 ```
 
