@@ -1,4 +1,5 @@
 # Training data preparation for OpenNMT
+This repository has a script which produces source file (i.e. acoustic feature vector) and target file to be used for OpenNMT training.
 
 ## Kaldi installation
 
@@ -6,9 +7,11 @@ Details of the Kaldi installation are described [HERE](http://kaldi-asr.org/doc/
 
 ## WSJ corpus
 
-Details of WSJ corpus is [LDC93S6B](https://catalog.ldc.upenn.edu/LDC93S6B) and [LDC94S13B](https://catalog.ldc.upenn.edu/LDC94S13B). I hope you have permission to use it.
+Details of WSJ corpus are [LDC93S6B](https://catalog.ldc.upenn.edu/LDC93S6B) and [LDC94S13B](https://catalog.ldc.upenn.edu/LDC94S13B). I hope you have permission to use it.
 
 In this repository, you need to define where WSJ corpus is located in: [run.wsj](https://github.com/homink/kaldi/blob/FeatureText/egs/onmt/s5/run_wsj.sh)
+
+As default, train_si284 and test_eval92 will be produced WSJ corpus. dev set is part of test_eval92. If you set build_all=1 in [run.wsj](https://github.com/homink/kaldi/blob/FeatureText/egs/onmt/s5/run_wsj.sh), only 1 set will be produced all together. The dimension of acoustic feacture vector is 40 as default as well. If you need only 40 dimension, set add_deltas=false in [extract_feat2lmfb.sh](https://github.com/homink/kaldi/blob/FeatureText/egs/onmt/s5/local/extract_feat2lmfb.sh)
 
 ## Execution
 
