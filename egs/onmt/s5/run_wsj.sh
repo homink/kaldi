@@ -58,6 +58,9 @@ cat audio.flist | sort | while read wavfile; do
   text=$(echo $uttid" " $(grep $uttid $dot) | local/normalize_transcript.pl $noiseword)
   text=${text/$uttid" "/}
   text=${text/" ("$(echo $uttid | awk '{print toupper($0)}')")"/}
+  text=$(echo $text | sed -e 's/ < n o i s e > _//g' | \
+                      sed -e 's/ _ < n o i s e >//g' | \
+                      sed -e 's/["&*?()<>:;,{}!/~`]//g')
   gender=$(grep -w "^$spk" $spkrinfo | awk '{print $2}')
   echo $spk$'\t'$gender$'\t'$uttid$'\t'$wavfile$'\t'$text >> tmp.table
 done
