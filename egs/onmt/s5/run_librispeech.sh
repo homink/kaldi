@@ -48,4 +48,5 @@ echo "
 for x in train_clean_100_sub;do
   echo "Building $x data ..."
   local/extract_feat2lmfb.sh libri.table data/libri_$x data/libri_$x"_"fbank
+  local/extract_trans.sh data/libri_$x data/libri_$x"_"fbank
 done
