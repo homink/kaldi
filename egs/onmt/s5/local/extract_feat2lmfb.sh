@@ -69,10 +69,3 @@ check_uid $FDATA"_"fbank40.txt $KDATA/text
 if $add_deltas; then
   check_uid $FDATA"_"fbank120.txt $KDATA/text
 fi
-
-echo "Converting transcription to be used for OpenNMT ..."
-awk '{print $1}' $KDATA/text > temp.uid
-awk '{$1=""}1' $KDATA/text | sed 's/^ //g;s/ /_/g;s/./& /g;s/\(.*\)/\L\1/g' > temp.trans
-paste -d' ' temp.uid temp.trans > $FDATA"_"trans.txt
-rm -f temp.uid temp.trans
-echo "Done"
