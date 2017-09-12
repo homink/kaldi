@@ -1,5 +1,5 @@
 
-# ex) ./extract_feat2text.sh wsj.table data/wsj exp/make_fbank/wsj
+# ex) ./extract_trans.sh data/wsj exp/make_fbank/wsj
 
 
 echo "
