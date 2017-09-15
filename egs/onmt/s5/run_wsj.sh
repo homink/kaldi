@@ -133,7 +133,7 @@ done
 echo -n "wsj_train_fbank_fbank120.txt - max of feature frame length: "
 grep -nr "\[" data/wsj_train_fbank_fbank120.txt | sed 's/:.*//g' > train_start.txt
 grep -nr "\]" data/wsj_train_fbank_fbank120.txt | sed 's/:.*//g' > train_end.txt
-python diff.py train_start.txt train_end.txt | sort -V | tail -n 1
+python local/diff.py train_start.txt train_end.txt | sort -V | tail -n 1
 rm -f train_start.txt train_end.txt
 echo -n "wsj_train_fbank_fbank120.txt - max of transcription sequence length: "
 cat data/wsj_dev_fbank_trans.txt | while read line;do echo $line | awk '{$1=""; print$0}' | wc -m; done | sort -V | tail -n 1
