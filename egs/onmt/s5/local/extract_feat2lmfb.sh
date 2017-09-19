@@ -34,6 +34,11 @@ else
   awk '{printf("corpus_%s '$sph2pipe' -f wav %s |\n",$3,$4)}' $TABLE > $KDATA/wav.scp
 fi
 
+GetCPU () {
+  if [ -z "$1" ]; then NUM_CPU=4; else NUM_CPU=$1; fi
+}
+
+GetCPU $4
 steps/make_fbank.sh --cmd "$train_cmd" --nj 4 $KDATA $LDATA $FDATA || exit 1;
 utils/fix_data_dir.sh $KDATA || exit;
 steps/compute_cmvn_stats.sh $KDATA $LDATA $FDATA || exit 1;
