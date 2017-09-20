@@ -10,8 +10,8 @@ echo """
 Reading WSJ corpus (LDC93S6B, LDC94S13B) in Progress ...
 """
 
-wsj0=/media/kwon/DISK2/DEV/DATA/LDC93S6B
-wsj1=/media/kwon/DISK2/DEV/DATA/LDC94S13B
+wsj0=/DATA/speech-data/LDC93S6B
+wsj1=/DATA/speech-data/LDC94S13B
 
 if [ ! -f wsj.table ]; then
 
@@ -77,7 +77,7 @@ else
   "
 fi
 
-build_all=0;only_trans=1
+build_all=0;only_trans=0
 echo """--num-mel-bins=40
 --sample-frequency=16000""" > conf/fbank.conf
 
@@ -137,3 +137,7 @@ python local/diff.py train_start.txt train_end.txt | sort -V | tail -n 1
 rm -f train_start.txt train_end.txt
 echo -n "wsj_train_fbank_fbank120.txt - max of transcription sequence length: "
 cat data/wsj_dev_fbank_trans.txt | while read line;do echo $line | awk '{$1=""; print$0}' | wc -m; done | sort -V | tail -n 1
+
+#wsj_train_fbank_fbank120.txt - max of feature frame length: 2433
+#wsj_train_fbank_fbank120.txt - max of transcription sequence length: 327
+
