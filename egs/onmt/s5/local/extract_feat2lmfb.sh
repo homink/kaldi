@@ -39,7 +39,7 @@ GetCPU () {
 }
 
 GetCPU $4
-steps/make_fbank.sh --cmd "$train_cmd" --nj 4 $KDATA $LDATA $FDATA || exit 1;
+steps/make_fbank.sh --cmd "$train_cmd" --nj $NUM_CPU $KDATA $LDATA $FDATA || exit 1;
 utils/fix_data_dir.sh $KDATA || exit;
 steps/compute_cmvn_stats.sh $KDATA $LDATA $FDATA || exit 1;
 
