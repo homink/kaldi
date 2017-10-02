@@ -12,7 +12,7 @@ Details of LibriSpeech corpus are [here](http://www.openslr.org/12/), which has 
 
 In this repository, you need to define where LibriSpeech corpus is located in: [run_libri.sh](https://github.com/homink/kaldi/blob/FeatureText/egs/onmt/s5/run_libri.sh)
 
-As default(libri_set=1), 3 sets of data (dev-clean test-clean train-clean-10) will be produced. libri_set=2 and 3 will proudce more data depending upon your preference. Both 40 dimension and 120 dimensional acoustic feacutre vector data will be produced. If you need only 40 dimension, set 'add_deltas=false' in [extract_feat2lmfb.sh](https://github.com/homink/kaldi/blob/FeatureText/egs/onmt/s5/local/extract_feat2lmfb.sh) for time saving.
+As default(libri_set=1), 3 sets of data (dev-clean, test-clean, train-clean-10) will be produced. libri_set=2 and 3 will proudce more data depending upon your preference. Both 40 dimension and 120 dimensional acoustic feacutre vector data will be produced. If you need only 40 dimension, set 'add_deltas=false' in [extract_feat2lmfb.sh](https://github.com/homink/kaldi/blob/FeatureText/egs/onmt/s5/local/extract_feat2lmfb.sh) for time saving.
 
 ### Execution
 
