@@ -114,3 +114,15 @@ fi
 #libri_train-clean-100_fbank_fbank120.txt - max of feature frame length: 2451
 #libri_train-clean-100_fbank_trans.txt - max of transcription sequence length: 797
 
+if [ "$libri_set" -eq 1 ];then
+  head -n 4000 data/libri_train-clean-100_fbank_trans.txt > data/libri_train-clean-100_fbank_trans_sub.txt
+  awk '{print $1}' data/libri_train-clean-100_fbank_trans_sub.txt > data/trans_sub.id
+  python local/GetAligned.py data/libri_train-clean-100_fbank_fbank120.txt data/trans_sub.id
+  local/CheckIDs.sh data/libri_train-clean-100_fbank_fbank120_sub.txt data/libri_train-clean-100_fbank_trans_sub.txt
+  
+  head -n 50 data/libri_test-clean_fbank_trans.txt > data/libri_test-clean_fbank_trans_sub.txt
+  awk '{print $1}' data/libri_test-clean_fbank_trans_sub.txt > data/trans_sub.id
+  python local/GetAligned.py data/libri_test-clean_fbank_fbank120.txt data/trans_sub.id
+  local/CheckIDs.sh data/libri_test-clean_fbank_fbank120_sub.txt data/libri_test-clean_fbank_trans_sub.txt
+  rm -f trans_sub.id
+fi
