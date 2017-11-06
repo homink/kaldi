@@ -1,6 +1,5 @@
 #!/bin/bash
 #This scrpit processes single utterance and produces 120-dim log mel filter bank feature to desginated directory.
-#It supports data augmentation
 # ex) ./speech2lmfb.sh sample.[wav|wv1|flac|mp3|wma] ./save_directory
 
 export train_cmd=run.pl
@@ -12,12 +11,9 @@ export PATH=$PWD/utils/:$KALDI_ROOT/tools/openfst/bin:$PWD:$PATH
 . $KALDI_ROOT/tools/config/common_path.sh
 export LC_ALL=C
 
-perturbed=0;num_copies=3
 fbank_type="fbank40 fbank120"
 
-set -e
 . utils/parse_options.sh
-
 
 check_arg () {
   if [ ! -f $1 ];then
@@ -64,7 +60,7 @@ audio_conversion () {
 
 check_arg $1 $2
 
-ffprobe -i $1 &> audio.info
+ffmpeg -i $1 &> audio.info
 
 if grep -q "not found" audio.info; then
   help_ffmepg
@@ -149,17 +145,6 @@ nj=1
 $WSJ/steps/make_fbank.sh --cmd "$train_cmd" --nj $nj $KDATA $LDATA $FDATA || exit 1;
 $WSJ/utils/fix_data_dir.sh $KDATA || exit;
 $WSJ/steps/compute_cmvn_stats.sh $KDATA $LDATA $FDATA || exit 1;
-
-# Speech data augmenation using VTLN warp factor and time-warp factor
-if [ "$perturbed" -eq 1 ]; then
-  echo ">>> perturbed is set and in progress..."
-  PDATA=$KDATA"_"aug
-  steps/nnet2/get_perturbed_feats.sh --nj $nj --num_copies $num_copies \
-    conf/fbank.conf $PDATA"_"fbank $LDATA"_"aug $KDATA $PDATA
-  KDATA=$PDATA
-  LDATA=$PDATA
-  echo ">>> The perturbed process is done"
-fi
 
 function check_uid {
 
