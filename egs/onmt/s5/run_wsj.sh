@@ -6,14 +6,20 @@
 . ./cmd.sh
 . ./path.sh
 
-echo """
-Reading WSJ corpus (LDC93S6B, LDC94S13B) in Progress ...
-"""
+build_all=0;only_trans=0
+data_set="dev test train";fbank_type="fbank40 fbank120"
+perturbed=0;num_copies=3
+
+set -e
+. utils/parse_options.sh
+
 
 wsj0=/DATA/speech-data/LDC93S6B
 wsj1=/DATA/speech-data/LDC94S13B
 
 if [ ! -f wsj.table ]; then
+
+  echo ">> Building WSJ corpus table in progress ..."
 
   if [ ! -f $wsj0/wsj0-train-spkrinfo.txt ]; then
     wget https://catalog.ldc.upenn.edu/docs/LDC93S6A/wsj0-train-spkrinfo.txt -P $wsj0
@@ -68,21 +74,16 @@ if [ ! -f wsj.table ]; then
   sed 's/^/corpus/g' tmp.table | sort -k 1,1 | sed 's/^corpus//g' > wsj.table
   rm -f audio.flist dot_files.flist tmp.table
 
-  echo "
-    WSJ corpus table is created
-  "
+  echo ">> WSJ corpus table is created"
 else
-  echo "
-    WSJ corpus table is already made
-  "
+  echo ">> WSJ corpus table is already made"
 fi
 
-build_all=0;only_trans=0
 echo """--num-mel-bins=40
 --sample-frequency=16000""" > conf/fbank.conf
 
 if [ $build_all -eq 1 ]; then
-  echo "Building all data ..."
+  echo ">> Building feature data all together (dev + test + train) ..."
   local/extract_feat2lmfb.sh wsj.table data/wsj data/wsj_fbank
 
 else
@@ -91,6 +92,7 @@ else
       grep $uid wsj.table
     done > wsj_tmp.table
     sed 's/^/corpus/g' wsj_tmp.table | sort -k 1,1 | sed 's/^corpus//g' > wsj_dev.table
+    echo ">> wsj_dev.table is created"
   else
     echo "wsj_dev.table found"
   fi
@@ -100,8 +102,9 @@ else
       grep $uid wsj.table
     done > wsj_tmp.table
     sed 's/^/corpus/g' wsj_tmp.table | sort -k 1,1 | sed 's/^corpus//g' > wsj_test.table
+    echo ">> wsj_test.table is created"
   else
-    echo "wsj_test.table"
+    echo "wsj_test.table found"
   fi
 
   if [ ! -f wsj_train.table ]; then
@@ -109,34 +112,51 @@ else
       grep $uid wsj.table
     done > wsj_tmp.table
     sed 's/^/corpus/g' wsj_tmp.table | sort -k 1,1 | sed 's/^corpus//g' > wsj_train.table
+    echo ">> wsj_train.table is created"
+  else
+    echo "wsj_train.table found"
   fi
 
 
-  for x in dev test train;do
-    echo "Building $x data ..."
+  for x in $data_set;do
+    echo "Building feature data for $x ..."
     if [ "$only_trans" -eq 1 ]; then
       echo "Building $x transcription data only ..."
       local/extract_trans.sh data/wsj_$x data/wsj_$x"_"fbank
     else
-      local/extract_feat2lmfb.sh wsj_$x.table data/wsj_$x data/wsj_$x"_"fbank
-      local/extract_trans.sh data/wsj_$x data/wsj_$x"_"fbank
+      if [ "$x" == "train" ];then
+        if [ $perturbed -eq 1 ];then
+          echo "perturbed is set"
+          local/extract_feat2lmfb.sh --nj 22 --perturbed "$perturbed" --num_copies "$num_copies" \
+            --fbank_type "$fbank_type" wsj_$x.table data/wsj_$x data/wsj_$x"_"fbank
+          tag="aug"
+        else
+          local/extract_feat2lmfb.sh --nj 22 \
+            --fbank_type "$fbank_type" wsj_$x.table data/wsj_$x data/wsj_$x"_"fbank
+        fi
+      else
+        local/extract_feat2lmfb.sh --nj 22 \
+          --fbank_type "$fbank_type" wsj_$x.table data/wsj_$x data/wsj_$x"_"fbank
+      fi
     fi
   done
 fi
 
-for fn in data/wsj_dev_fbank_trans.txt data/wsj_test_fbank_trans.txt data/wsj_train_fbank_trans.txt
-do
+for fn in `find ./data -name "*trans.txt"`;do
+  echo "Changing < n o i s e > to <n> for $fn"
   cat $fn |  sed -e 's/ < n o i s e > _/ <n> _/g' | sed -e 's/ _ < n o i s e >/ _ <n>/g' \
     > ${fn/.txt/_nm.txt}
 done
 
-echo -n "wsj_train_fbank_fbank120.txt - max of feature frame length: "
-grep -nr "\[" data/wsj_train_fbank_fbank120.txt | sed 's/:.*//g' > train_start.txt
-grep -nr "\]" data/wsj_train_fbank_fbank120.txt | sed 's/:.*//g' > train_end.txt
-python local/diff.py train_start.txt train_end.txt | sort -V | tail -n 1
-rm -f train_start.txt train_end.txt
-echo -n "wsj_train_fbank_fbank120.txt - max of transcription sequence length: "
-cat data/wsj_dev_fbank_trans.txt | while read line;do echo $line | awk '{$1=""; print$0}' | wc -m; done | sort -V | tail -n 1
+if [ -f  data/wsj_train_$tag"_"fbank_fbank120.txt ];then
+  echo -n "wsj_train_"$tag"_""fbank_fbank120.txt - max of feature frame length: "
+  grep -nr "\[" data/wsj_train_$tag"_"fbank_fbank120.txt | sed 's/:.*//g' > train_start.txt
+  grep -nr "\]" data/wsj_train_$tag"_"fbank_fbank120.txt | sed 's/:.*//g' > train_end.txt
+  python local/diff.py train_start.txt train_end.txt | sort -V | tail -n 1
+  rm -f train_start.txt train_end.txt
+  echo -n "wsj_train_"$tag"_""fbank_fbank120.txt - max of transcription sequence length: "
+  cat data/wsj_train_$tag"_"fbank_trans.txt | while read line;do echo $line | awk '{$1=""; print$0}' | wc -m; done | sort -V | tail -n 1
+fi
 
 #wsj_train_fbank_fbank120.txt - max of feature frame length: 2433
 #wsj_train_fbank_fbank120.txt - max of transcription sequence length: 327

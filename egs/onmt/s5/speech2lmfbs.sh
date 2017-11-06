@@ -1,4 +1,6 @@
 #!/bin/bash
+#This scrpit processes single utterance and produces 120-dim log mel filter bank feature to desginated directory.
+#It supports data augmentation
 # ex) ./speech2lmfb.sh sample.[wav|wv1|flac|mp3|wma] ./save_directory
 
 export train_cmd=run.pl
@@ -9,6 +11,13 @@ export PATH=$PWD/utils/:$KALDI_ROOT/tools/openfst/bin:$PWD:$PATH
  present -> Exit!" && exit 1
 . $KALDI_ROOT/tools/config/common_path.sh
 export LC_ALL=C
+
+perturbed=0;num_copies=3
+fbank_type="fbank40 fbank120"
+
+set -e
+. utils/parse_options.sh
+
 
 check_arg () {
   if [ ! -f $1 ];then
@@ -55,7 +64,8 @@ audio_conversion () {
 
 check_arg $1 $2
 
-ffmpeg -i $1 &> audio.info
+ffprobe -i $1 &> audio.info
+
 if grep -q "not found" audio.info; then
   help_ffmepg
 
@@ -132,31 +142,57 @@ echo $UTT_ID" 0001" > $UTT2SPK
 echo "0001 "$UTT_ID > $SPK2UTT
 
 KDATA=$DATA/$UTT_ID
-LDATA=$DATA/$UTT_ID/log
-FDATA=$DATA/$UTT_ID/fbank
+LDATA=$KDATA/log
+FDATA=$KDATA/data
+nj=1
 
-$WSJ/steps/make_fbank.sh --cmd "$train_cmd" --nj 1 $KDATA $LDATA $FDATA || exit 1;
+$WSJ/steps/make_fbank.sh --cmd "$train_cmd" --nj $nj $KDATA $LDATA $FDATA || exit 1;
 $WSJ/utils/fix_data_dir.sh $KDATA || exit;
 $WSJ/steps/compute_cmvn_stats.sh $KDATA $LDATA $FDATA || exit 1;
+
+# Speech data augmenation using VTLN warp factor and time-warp factor
+if [ "$perturbed" -eq 1 ]; then
+  echo ">>> perturbed is set and in progress..."
+  PDATA=$KDATA"_"aug
+  steps/nnet2/get_perturbed_feats.sh --nj $nj --num_copies $num_copies \
+    conf/fbank.conf $PDATA"_"fbank $LDATA"_"aug $KDATA $PDATA
+  KDATA=$PDATA
+  LDATA=$PDATA
+  echo ">>> The perturbed process is done"
+fi
+
+function check_uid {
+
+  ! grep "\[" $1 | sed 's/  \[//g' | \
+  cmp -s - <(awk '{print $1}' $2) \
+  && echo "uid between feature and transcription not matched"
+  echo "$1 and $2 well matched!"
+}
 
 norm_vars=true
 add_deltas=true
 
 feats_tr="ark,s,cs:apply-cmvn --norm-vars=$norm_vars --utt2spk=ark:$KDATA/utt2spk \
           scp:$KDATA/cmvn.scp scp:$KDATA/feats.scp ark:- |"
-tmpdir=$(mktemp -d /tmp/XXX);
-copy-feats "$feats_tr" ark,scp:$tmpdir/tmp.ark,$LDATA/tmp"_"norm.scp || exit 1;
-copy-feats scp:$LDATA/tmp"_"norm.scp ark,t:- > $FDATA"_"fbank40.txt
-if $add_deltas; then
-  copy-feats scp:$LDATA/tmp"_"norm.scp ark,t:- | add-deltas ark,t:- ark,t:- > $FDATA"_"fbank120.txt
-fi
+copy-feats "$feats_tr" ark,scp:$LDATA/tmp.ark,$LDATA/tmp"_"norm.scp || exit 1;
 
-rm -rf $tmpdir
-rm -f $LDATA/tmp"_"norm.scp
+#Copying to 40 & 120 dimenstional filter bank coefficients with text format
+for fbank in $fbank_type;do
+  echo ">>> $fbank is in progress ..."
+  if [ "$fbank" == "fbank40" ];then
+    copy-feats scp:$LDATA/tmp"_"norm.scp ark,t:- > $KDATA"_"$fbank.txt
+    echo ">>> Checking utternce IDs between feature and transcription ..."
+    check_uid $KDATA"_"$fbank.txt $KDATA/text
+  elif [ "$fbank" == "fbank120" ];then
+    copy-feats scp:$LDATA/tmp"_"norm.scp ark,t:- | add-deltas ark,t:- ark,t:- > $KDATA"_"$fbank.txt
+    echo ">>> Checking utternce IDs between feature and transcription ..."
+    check_uid $KDATA"_"$fbank.txt $KDATA/text
+  fi
+  ls $KDATA"_"$fbank.txt
+done
+
+rm -f $LDATA/tmp"_"norm.scp $LDATA/tmp.ark
 
 if [ "$file_converted" -eq 1 ];then
   rm -f $audioinput
 fi
-
-ls $PWD/$FDATA"_"fbank40.txt
-ls $PWD/$FDATA"_"fbank120.txt

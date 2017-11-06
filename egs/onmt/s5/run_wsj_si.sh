@@ -1,4 +1,6 @@
 #!/bin/bash
+#This script doesn't consier speaker dependency and processes 120-dim log mel filter bank feature per single utterance.
+#It may affect the performance in the generic Kaldi recipe but could be useful for other application such as end-to-end.
 
 . ./cmd.sh
 . ./path.sh
