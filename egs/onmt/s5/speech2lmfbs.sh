@@ -31,20 +31,23 @@ help_ffmpeg () {
   echo """
 ffmpeg not found. please install it
 
+
 For CentOS, the following will be helpful.
+
 
 CentOS 7.x:
 sudo rpm --import http://li.nux.ro/download/nux/RPM-GPG-KEY-nux.ro
 sudo rpm -Uvh http://li.nux.ro/download/nux/dextop/el7/x86_64/nux-dextop-release-0-5.el7.nux.noarch.rpm
+sudo yum install ffmpeg ffmpeg-devel -y
+
 
 CentOS 6.x:
 sudo rpm --import http://li.nux.ro/download/nux/RPM-GPG-KEY-nux.ro
 sudo rpm -Uvh http://li.nux.ro/download/nux/dextop/el6/x86_64/nux-dextop-release-0-2.el6.nux.noarch.rpm
-
 sudo yum install ffmpeg ffmpeg-devel -y
 
-For Ubuntu,
 
+For Ubuntu,
 sudo apt-get install ffmpeg
 
 """
